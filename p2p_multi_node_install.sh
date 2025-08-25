@@ -145,7 +145,7 @@ do
         sed -i '/engine version:/d' $CONFIG_FILE
         sed -i '/prediction stream:/d' $CONFIG_FILE
 
-        echo "server ip: ${SERVER_IP}" >> $CONFIG_FILE
+        echo "server ip: 0.0.0.0" >> $CONFIG_FILE
         echo "server port: ${P2P_PORT}" >> $CONFIG_FILE
         echo "ui port: ${UI_PORT}" >> $CONFIG_FILE
         echo "engine version: v2" >> $CONFIG_FILE
