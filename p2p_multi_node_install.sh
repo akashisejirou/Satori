@@ -172,6 +172,9 @@ do
 
     cd $NODE_DIR
     docker compose up -d || echo "Failed to start container satorineuron${i}, continuing..."
+    
+    LOG_FILE="${NODE_DIR}/satori${i}.log"
+    docker logs -f satorineuron${i} > "$LOG_FILE" 2>&1 &
 
     echo "Node $i running (container: satorineuron${i}, P2P=${P2P_PORT}, UI=${UI_PORT})"
 
