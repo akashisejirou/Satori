@@ -6,7 +6,23 @@ echo " Satori Node Script"
 echo "======================================"
 echo "1) Install new nodes"
 echo "2) Update existing nodes"
-read -p "Choose an option [1-2]: " ACTION </dev/tty
+echo "3) Enable daily auto-update via cron"
+read -p "Choose an option [1-3]: " ACTION </dev/tty
+
+if [ "$ACTION" == "3" ]; then
+    AUTO_UPDATE_SCRIPT=~/satori_update.sh
+    echo "Setting up daily auto-update script..."
+
+    if [ ! -f "$AUTO_UPDATE_SCRIPT" ]; then
+        wget -O "$AUTO_UPDATE_SCRIPT" "https://github.com/akashisejirou/Satori/blob/cce26719c1d5aaf444a8de07207de38e1c7d2cab/satori_update.sh"
+        chmod +x "$AUTO_UPDATE_SCRIPT"
+    fi
+
+    (crontab -l 2>/dev/null; echo "0 1 * * * $AUTO_UPDATE_SCRIPT >> ~/satori_auto_update.log 2>&1") | crontab -
+    echo "Auto-update enabled for all nodes. Nodes will update everyday at 1AM"
+    exit 0
+fi
+
 
 if [ "$ACTION" == "2" ]; then
     echo "Updating existing nodes..."
@@ -14,10 +30,10 @@ if [ "$ACTION" == "2" ]; then
     for NODE_DIR in ~/satori[0-9]*; do
         if [ -d "$NODE_DIR" ] && [ -f "$NODE_DIR/docker-compose.yaml" ]; then
             cd $NODE_DIR
-            echo "⬇Updating node in $NODE_DIR..."
+            echo "Updating node in $NODE_DIR..."
             docker compose down || true
             docker compose pull || true
-            docker compose up --pull always -d || true
+            docker compose up -d || true
             echo "Node in $NODE_DIR updated and restarted."
         fi
     done
@@ -196,7 +212,7 @@ do
     fi
 
     cd $NODE_DIR
-    docker compose up --pull always -d || echo "Failed to start container satorineuron${i}, continuing..."
+    docker compose up -d || echo "Failed to start container satorineuron${i}, continuing..."
     
     LOG_FILE="${NODE_DIR}/satori${i}.log"
     docker logs -f satorineuron${i} > "$LOG_FILE" 2>&1 &
