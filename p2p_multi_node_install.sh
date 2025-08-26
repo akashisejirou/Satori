@@ -12,11 +12,9 @@ read -p "Choose an option [1-3]: " ACTION </dev/tty
 if [ "$ACTION" == "3" ]; then
     AUTO_UPDATE_SCRIPT=~/satori_update.sh
     echo "Setting up daily auto-update script..."
-
-    if [ ! -f "$AUTO_UPDATE_SCRIPT" ]; then
-        wget -O "$AUTO_UPDATE_SCRIPT" "https://raw.githubusercontent.com/akashisejirou/Satori/cce26719c1d5aaf444a8de07207de38e1c7d2cab/satori_update.sh"
-        chmod +x "$AUTO_UPDATE_SCRIPT"
-    fi
+    
+    curl -o "$AUTO_UPDATE_SCRIPT" "https://raw.githubusercontent.com/akashisejirou/Satori/cce26719c1d5aaf444a8de07207de38e1c7d2cab/satori_update.sh"
+    chmod +x "$AUTO_UPDATE_SCRIPT"
 
     (crontab -l 2>/dev/null; echo "0 1 * * * $AUTO_UPDATE_SCRIPT >> ~/satori_auto_update.log 2>&1") | crontab -
     echo "Auto-update enabled for all nodes. Nodes will update everyday at 1AM"
