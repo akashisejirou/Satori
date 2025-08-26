@@ -165,16 +165,19 @@ do
 
     if [ "$MIGRATE_NODES" = true ]; then
         OLD_NODE_DIR=${EXISTING_BASE}${i}
-    else
-        OLD_NODE_DIR=~/.satori${i}
     fi
 
+if [ "$MIGRATE_NODES" = true ]; then
     for FOLDER in config wallet data models; do
         if [ -d "$OLD_NODE_DIR/$FOLDER" ]; then
-            rm -rf $NODE_DIR/$FOLDER
-            cp -r $OLD_NODE_DIR/$FOLDER $NODE_DIR/
+            rm -rf "$NODE_DIR/$FOLDER"
+            cp -r "$OLD_NODE_DIR/$FOLDER" "$NODE_DIR/"
+            echo "Copied $OLD_NODE_DIR/$FOLDER to $NODE_DIR/$FOLDER"
+        else
+            echo "Skipping $OLD_NODE_DIR/$FOLDER — folder does not exist"
         fi
     done
+fi
     
     CONFIG_FILE=$NODE_DIR/config/config.yaml
     if [ -f "$CONFIG_FILE" ]; then
@@ -197,7 +200,7 @@ do
     sed -i "/- ~\/.satori\/config:/c\      - ${NODE_DIR}/config:/Satori/Neuron/config" $COMPOSE_FILE
     sed -i "/- ~\/.satori\/wallet:/c\      - ${NODE_DIR}/wallet:/Satori/Neuron/wallet" $COMPOSE_FILE
     sed -i "/- ~\/.satori\/data:/c\      - ${NODE_DIR}/data:/Satori/Neuron/data" $COMPOSE_FILE
-    sed -i "/- ~\/.satori\/models:/c\      - ${NODE_DIR}/models:/Satori/Neuron/models" $COMPOSE_FIL
+    sed -i "/- ~\/.satori\/models:/c\      - ${NODE_DIR}/models:/Satori/Neuron/models" $COMPOSE_FILE
     sed -i "/deploy:/,/memory:/d" $COMPOSE_FILE
     sed -i "/image:/a\    deploy:\n      resources:\n        limits:\n          cpus: '${CPU_PER_NODE}'\n          memory: ${MEM_PER_NODE}M" $COMPOSE_FILE
     sed -i "/container_name:/d" $COMPOSE_FILE
