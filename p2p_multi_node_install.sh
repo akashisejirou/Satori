@@ -1,6 +1,31 @@
 #!/bin/bash
 set -e
 
+echo "======================================"
+echo " Satori Node Script"
+echo "======================================"
+echo "1) Install new nodes"
+echo "2) Update existing nodes"
+read -p "Choose an option [1-2]: " ACTION </dev/tty
+
+if [ "$ACTION" == "2" ]; then
+    echo "Updating existing nodes..."
+
+    for NODE_DIR in ~/satori[0-9]*; do
+        if [ -d "$NODE_DIR" ] && [ -f "$NODE_DIR/docker-compose.yaml" ]; then
+            cd $NODE_DIR
+            echo "⬇Updating node in $NODE_DIR..."
+            docker compose down || true
+            docker compose pull || true
+            docker compose up --pull always -d || true
+            echo "Node in $NODE_DIR updated and restarted."
+        fi
+    done
+
+    echo "All nodes updated!"
+    exit 0
+fi
+
 # Install Docker + Docker Compose V2 + prerequisites 
 echo "Checking Docker and Docker Compose installation..."
 
@@ -171,7 +196,7 @@ do
     fi
 
     cd $NODE_DIR
-    docker compose up -d || echo "Failed to start container satorineuron${i}, continuing..."
+    docker compose up --pull always -d || echo "Failed to start container satorineuron${i}, continuing..."
     
     LOG_FILE="${NODE_DIR}/satori${i}.log"
     docker logs -f satorineuron${i} > "$LOG_FILE" 2>&1 &
