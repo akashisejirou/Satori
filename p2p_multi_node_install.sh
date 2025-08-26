@@ -14,7 +14,7 @@ if [ "$ACTION" == "3" ]; then
     echo "Setting up daily auto-update script..."
 
     if [ ! -f "$AUTO_UPDATE_SCRIPT" ]; then
-        wget -O "$AUTO_UPDATE_SCRIPT" "https://github.com/akashisejirou/Satori/blob/cce26719c1d5aaf444a8de07207de38e1c7d2cab/satori_update.sh"
+        wget -O "$AUTO_UPDATE_SCRIPT" "ttps://raw.githubusercontent.com/akashisejirou/Satori/cce26719c1d5aaf444a8de07207de38e1c7d2cab/satori_update.sh"
         chmod +x "$AUTO_UPDATE_SCRIPT"
     fi
 
