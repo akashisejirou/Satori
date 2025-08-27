@@ -56,6 +56,12 @@ read -p "Enter number of nodes: " NODE_COUNT </dev/tty
 # Install Docker + Docker Compose V2 + prerequisites 
 echo "Checking Docker and Docker Compose installation..."
 
+if ! command -v bc &> /dev/null; then
+    echo "Installing bc..."
+    sudo apt update
+    sudo apt install -y bc || { echo "Failed to install bc"; exit 1; }
+fi
+
 if ! command -v docker &> /dev/null || ! docker compose version &> /dev/null; then
     echo "Installing Docker, Docker Compose V2, and required packages..."
 
