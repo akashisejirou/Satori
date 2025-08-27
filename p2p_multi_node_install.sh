@@ -40,6 +40,19 @@ if [ "$ACTION" == "2" ]; then
     exit 0
 fi
 
+# Ask if user has existing nodes
+read -p "Do you have existing nodes to migrate? (y/n): " HAS_EXISTING </dev/tty
+
+if [[ "$HAS_EXISTING" =~ ^[Yy]$ ]]; then
+    read -p "Enter the base directory of your existing nodes (e.g., /root/node/satori): " EXISTING_BASE </dev/tty
+    MIGRATE_NODES=true
+    echo "Script will assume your existing nodes are in increments: ${EXISTING_BASE}0, ${EXISTING_BASE}1, etc."
+else
+    MIGRATE_NODES=false
+fi
+
+read -p "Enter number of nodes: " NODE_COUNT </dev/tty
+
 # Install Docker + Docker Compose V2 + prerequisites 
 echo "Checking Docker and Docker Compose installation..."
 
@@ -98,21 +111,6 @@ if [ -n "$EXISTING_CONTAINERS" ]; then
 else
     echo "⚡ No existing Satori containers found."
 fi
-
-# Ask if user has existing nodes
-read -p "Do you have existing nodes to migrate? (y/n): " HAS_EXISTING </dev/tty
-
-if [[ "$HAS_EXISTING" =~ ^[Yy]$ ]]; then
-    read -p "Enter the base directory of your existing nodes (e.g., /root/node/satori): " EXISTING_BASE </dev/tty
-    MIGRATE_NODES=true
-    echo "ℹScript will assume your existing nodes are in increments: ${EXISTING_BASE}0, ${EXISTING_BASE}1, etc."
-else
-    MIGRATE_NODES=false
-fi
-
-# Ask for number of nodes
-read -p "Enter number of nodes: " NODE_COUNT </dev/tty
-
 
 echo "Downloading Satori package..."
 wget -P ~/ https://stage.satorinet.io/static/download/linux/linux.zip
