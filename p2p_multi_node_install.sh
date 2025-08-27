@@ -4,7 +4,7 @@ set -e
 echo "======================================"
 echo " Satori Node Script"
 echo "======================================"
-echo "1) Install new nodes"
+echo "1) Install new nodes (including migration of old nodes)"
 echo "2) Update existing nodes"
 echo "3) Enable daily auto-update via cron"
 read -p "Choose an option [1-3]: " ACTION </dev/tty
